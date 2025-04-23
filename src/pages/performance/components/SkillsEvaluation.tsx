@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, LockIcon, Save } from "lucide-react";
+import { AlertCircle, LockIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -301,20 +301,6 @@ export function SkillsEvaluation({
             <LockIcon className="h-4 w-4 mr-1" />
             <span>Solo el supervisor puede evaluar competencias</span>
           </div>
-        )}
-        
-        {effectiveCanEditSkills && onSaveSkills && (
-          <Button
-            onClick={() => {
-              // Al hacer clic en el botón, sincronizar primero el estado local con Supabase
-              onSaveSkills();
-            }}
-            variant="success"
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <Save className="h-4 w-4 mr-2" />
-            Guardar evaluación
-          </Button>
         )}
       </div>
       

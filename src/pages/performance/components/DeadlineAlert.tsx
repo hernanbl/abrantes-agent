@@ -1,4 +1,3 @@
-
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, Clock, AlertCircle } from "lucide-react";
 
@@ -23,7 +22,7 @@ export function DeadlineAlert({
   
   if (isExpired) {
     return (
-      <Alert variant="destructive" className="mb-4 border-2 border-destructive">
+      <Alert variant="destructive" className="mb-4 border-2 border-destructive bg-red-100">
         <AlertTriangle className="h-5 w-5" />
         <AlertTitle className="text-lg font-bold">Plazo expirado</AlertTitle>
         <AlertDescription className="text-base">
@@ -39,14 +38,14 @@ export function DeadlineAlert({
     return (
       <Alert 
         variant={isUrgent ? "destructive" : "default"} 
-        className={`mb-4 ${isUrgent ? 'border-2 border-destructive animate-pulse' : ''}`}
+        className={`mb-4 ${isUrgent ? 'border-2 border-destructive animate-pulse' : 'border border-red-300'} bg-red-100`}
       >
         {isUrgent ? <AlertCircle className="h-5 w-5" /> : <Clock className="h-5 w-5" />}
         <AlertTitle className={`${isUrgent ? 'text-lg font-bold' : 'font-medium'}`}>
           {isUrgent ? '¡Atención! Tiempo limitado' : 'Tiempo limitado'}
         </AlertTitle>
         <AlertDescription className={isUrgent ? 'text-base' : ''}>
-          Quedan <strong>{daysRemaining} día{daysRemaining !== 1 ? 's' : ''}</strong> para completar la evaluación.
+          Quedan <strong>{daysRemaining} día{daysRemaining !== 1 ? 's' : ''}</strong> para completar tu evaluación.
           Fecha límite: <strong>{formattedDeadline}</strong>.
           {isUrgent && <p className="mt-1 font-semibold">Es obligatorio completar todos los campos antes de la fecha límite.</p>}
         </AlertDescription>

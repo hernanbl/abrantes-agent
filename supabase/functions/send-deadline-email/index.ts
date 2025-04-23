@@ -159,7 +159,7 @@ serve(async (req) => {
     
     // Enviar el email usando Resend
     const { data: emailResponse, error: emailError } = await resend.emails.send({
-      from: "Evaluaciones <notificaciones@tuempresa.com>", // Actualizar con tu dominio verificado
+      from: "Evaluaciones Abrantes <mgentili@abrantes.com.ar >", // Actualizar con tu dominio verificado
       to: [recipientEmail],
       subject: emailSubject,
       html: emailContent,

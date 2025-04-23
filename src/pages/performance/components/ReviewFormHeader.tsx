@@ -47,7 +47,7 @@ export function ReviewFormHeader({ children }: ReviewFormHeaderProps) {
     <CardHeader className="pb-4">
       <div className="flex justify-between items-center">
         <div className="flex flex-col space-y-2">
-          <CardTitle>Evaluación de Desempeño</CardTitle>
+          <CardTitle>Evaluación de Desempeño y Desarrollo </CardTitle>
           {children}
         </div>
         <Button 
