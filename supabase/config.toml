@@ -1,0 +1,5 @@
+
+project_id = "oqvonmobyoxbntddvfew"
+
+[functions.send-deadline-email]
+verify_jwt = false
