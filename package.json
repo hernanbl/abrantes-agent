@@ -9,7 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "vite preview --host"
+    "start": "vite preview --host",
+    "install:ci": "yarn install --frozen-lockfile"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
