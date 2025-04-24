@@ -7,7 +7,7 @@ services:
       export BUN_INSTALL="$HOME/.bun"
       export PATH="$BUN_INSTALL/bin:$PATH"
       bun install
-      bun run build
+      bun build ./src/main.tsx --outdir=dist
     startCommand: |
       export BUN_INSTALL="$HOME/.bun"
       export PATH="$BUN_INSTALL/bin:$PATH"
