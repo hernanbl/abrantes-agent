@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  preview: {
+    allowedHosts: ["abrantes-agent.onrender.com", "localhost"]
+  },
   plugins: [
     react(),
     mode === 'development' &&
