@@ -8,9 +8,14 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    proxy: {
+      // Configuración de proxy para desarrollo si es necesario
+    }
   },
   preview: {
-    allowedHosts: ["abrantes-agent.onrender.com", "localhost"]
+    host: "0.0.0.0",
+    port: 10000,
+    allowedHosts: ["abrantes-agent.onrender.com", "localhost", "abrantes.vivacomdev.com", ".vivacomdev.com"]
   },
   plugins: [
     react(),
