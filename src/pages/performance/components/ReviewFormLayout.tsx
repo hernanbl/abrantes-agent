@@ -304,7 +304,7 @@ export function ReviewFormLayout({
           <LongTermGoal
             value={formData.long_term_goal}
             handleChange={handleChange}
-            readOnly={isReadOnly || isSubmitted}
+            readOnly={isReadOnly || isSubmitted || !isCurrentUserTheEmployee}
           />
 
           <DevelopmentGoals

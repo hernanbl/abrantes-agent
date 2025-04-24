@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Save } from "lucide-react";
+import { Save, UserCircle, ShieldCheck } from "lucide-react";
 import { StatusBadge } from "../../supervisor/components/StatusBadge";
 
 interface CommentsProps {
@@ -96,7 +96,15 @@ export function Comments({
         {/* Employee comment - Always visible */}
         {showEmployeeComment && (
           <div className="space-y-2">
-            <Label htmlFor="employeeComment">Comentario del Empleado</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="employeeComment">Comentario del Empleado</Label>
+              {canEditEmployeeComment && (
+                <div className="flex items-center gap-1 text-sm px-2 py-1 bg-blue-50 text-blue-700 rounded-md border border-blue-200">
+                  <UserCircle className="h-4 w-4" />
+                  <span>Campo del empleado</span>
+                </div>
+              )}
+            </div>
             {canEditEmployeeComment ? (
               <>
                 <Textarea
@@ -104,7 +112,7 @@ export function Comments({
                   value={employeeComment || ""}
                   onChange={(e) => onEmployeeCommentChange(e.target.value)}
                   placeholder="Escribe tus comentarios, observaciones o sugerencias"
-                  className="min-h-[100px]"
+                  className={`min-h-[100px] ${!readOnly ? "border-blue-300 focus-visible:ring-blue-500 shadow-[0_0_0_1px_rgba(59,130,246,0.3)]" : ""}`}
                 />
                 {showSaveEmployeeCommentButton && (
                   <div className="mt-2">
@@ -112,6 +120,7 @@ export function Comments({
                       onClick={onSaveEmployeeComment}
                       variant="outline"
                       size="sm"
+                      className="border-blue-300 text-blue-700 hover:bg-blue-50"
                     >
                       <Save className="mr-1" size={16} />
                       Guardar comentario
@@ -129,7 +138,15 @@ export function Comments({
 
         {/* Supervisor comment - Editable only by direct supervisors and HR managers, never by employees */}
         <div className="space-y-2">
-          <Label htmlFor="supervisorComment">Comentario del Supervisor</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="supervisorComment">Comentario del Supervisor</Label>
+            {canEditSupervisorComment && (
+              <div className="flex items-center gap-1 text-sm px-2 py-1 bg-amber-50 text-amber-700 rounded-md border border-amber-200">
+                <ShieldCheck className="h-4 w-4" />
+                <span>Campo del supervisor</span>
+              </div>
+            )}
+          </div>
           {canEditSupervisorComment ? (
             <>
               <Textarea
@@ -137,7 +154,7 @@ export function Comments({
                 value={supervisorComment || ""}
                 onChange={(e) => onSupervisorCommentChange(e.target.value)}
                 placeholder="Comentarios del supervisor"
-                className="min-h-[100px]"
+                className="min-h-[100px] border-amber-300 focus-visible:ring-amber-500 shadow-[0_0_0_1px_rgba(217,119,6,0.3)]"
               />
               {showSaveSupervisorCommentButton && (
                 <div className="mt-2">
@@ -146,6 +163,7 @@ export function Comments({
                     variant="outline"
                     size="sm"
                     type="button"
+                    className="border-amber-300 text-amber-700 hover:bg-amber-50"
                   >
                     <Save className="mr-1" size={16} />
                     Guardar comentario del supervisor

@@ -1,9 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, UserCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -174,7 +173,15 @@ export function DevelopmentGoals({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Metas de Desarrollo</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Metas de Desarrollo</h3>
+        {!readOnly && (
+          <div className="flex items-center gap-1 text-sm px-2 py-1 bg-blue-50 text-blue-700 rounded-md border border-blue-200">
+            <UserCircle className="h-4 w-4" />
+            <span>Campo del empleado</span>
+          </div>
+        )}
+      </div>
       <p className="text-sm text-muted-foreground">
         Define acciones concretas para mejorar tus competencias
       </p>
@@ -191,7 +198,7 @@ export function DevelopmentGoals({
       <div className="space-y-4">
         {goals.length > 0 ? (
           goals.map((goal, index) => (
-            <div key={index} className="flex items-center gap-2 p-4 border rounded-lg">
+            <div key={index} className={`flex items-center gap-2 p-4 rounded-lg ${!readOnly ? "border-blue-300 border shadow-[0_0_0_1px_rgba(59,130,246,0.2)]" : "border"}`}>
               <p className="flex-1">{goal}</p>
               {!readOnly && (
                 <Button
@@ -208,7 +215,7 @@ export function DevelopmentGoals({
           ))
         ) : (
           <div className="p-4 border rounded-lg text-muted-foreground">
-            No hay metas de desarrollo definidas
+            
           </div>
         )}
       </div>
@@ -230,12 +237,14 @@ export function DevelopmentGoals({
                   handleAddGoal();
                 }
               }}
+              className={!readOnly ? "border-blue-300 focus-visible:ring-blue-500 shadow-[0_0_0_1px_rgba(59,130,246,0.3)]" : ""}
             />
           </div>
           <Button 
             type="button" 
             onClick={handleAddGoal}
             disabled={isSaving || !newGoal.trim()}
+            className="border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100"
           >
             {isSaving ? "Guardando..." : "Agregar"}
           </Button>

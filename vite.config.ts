@@ -7,10 +7,8 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 8080,
-    proxy: {
-      // Configuración de proxy para desarrollo si es necesario
-    }
+    port: 8080
+    // Quito el proxy vacío que puede estar causando los errores
   },
   preview: {
     host: "0.0.0.0",
@@ -19,8 +17,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    mode === 'development' && componentTagger()
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -57,4 +54,4 @@ export default defineConfig(({ mode }) => ({
     // Forzar a usar funciones normales en lugar de construcciones que podrían usar eval
     target: 'es2020'
   }
-}));
+}))

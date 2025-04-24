@@ -1,5 +1,4 @@
-
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, UserCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface KPIHeaderProps { 
@@ -25,6 +24,12 @@ export function KPIHeader({
         <h3 className="text-lg font-semibold">
           Indicadores Clave de Desempeño (KPIs)
         </h3>
+        {canEditKpis && (
+          <div className="flex items-center gap-1 text-sm px-2 py-1 bg-blue-50 text-blue-700 rounded-md border border-blue-200">
+            <UserCircle className="h-4 w-4" />
+            <span>Campo del empleado</span>
+          </div>
+        )}
       </div>
       
       <p className="text-sm text-muted-foreground">

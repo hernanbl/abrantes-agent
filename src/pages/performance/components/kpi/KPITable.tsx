@@ -10,7 +10,7 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Star } from "lucide-react";
+import { Star, UserCircle, ShieldCheck, InfoIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
@@ -138,9 +138,29 @@ export function KPITable({
 
   return (
     <div className="space-y-4">
-      <Table>
+      <div className="flex justify-between items-center mb-2">
+        {canEditKpis && (
+          <div className="flex items-center gap-1 text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-md border border-blue-200">
+            <UserCircle className="h-3 w-3" />
+            <span>Descripción editable por el empleado</span>
+          </div>
+        )}
+        {canEditRatings && (
+          <div className="flex items-center gap-1 text-xs px-2 py-1 bg-amber-50 text-amber-700 rounded-md border border-amber-200">
+            <ShieldCheck className="h-3 w-3" />
+            <span>Calificación editable por el supervisor</span>
+          </div>
+        )}
+      </div>
+      
+      <div className="flex items-center gap-2 mb-2 p-2 bg-slate-50 rounded-md border border-slate-200 text-slate-700 text-sm">
+        <InfoIcon className="h-4 w-4 flex-shrink-0" />
+        <span>Nota: Los KPIs serán calificados por el supervisor</span>
+      </div>
+      
+      <Table className={canEditKpis ? "border border-blue-200 rounded-md shadow-[0_0_0_1px_rgba(59,130,246,0.2)]" : ""}>
         <TableHeader>
-          <TableRow>
+          <TableRow className={canEditKpis ? "bg-blue-50/30" : ""}>
             <TableHead className="w-[60%]">Descripción</TableHead>
             <TableHead className="w-[40%]">Puntuación (0-10)</TableHead>
           </TableRow>
@@ -157,7 +177,7 @@ export function KPITable({
                     placeholder="Describe el KPI"
                     readOnly={!canEditKpis}
                     className={cn(
-                      !canEditKpis ? "bg-muted" : "",
+                      !canEditKpis ? "bg-muted" : "border-blue-300 focus-visible:ring-blue-500 shadow-[0_0_0_1px_rgba(59,130,246,0.3)]",
                       "min-h-[80px] resize-y"
                     )}
                     required={canEditKpis}
@@ -178,7 +198,8 @@ export function KPITable({
                         onBlur={() => handleRatingBlur(index)}
                         className={cn(
                           "w-20", 
-                          !canEditRatings || isCurrentUserTheEmployee ? "bg-muted" : "",
+                          !canEditRatings || isCurrentUserTheEmployee ? "bg-muted" : 
+                          "border-amber-300 focus-visible:ring-amber-500 shadow-[0_0_0_1px_rgba(217,119,6,0.3)]",
                           savingStates[kpi.id!] ? "opacity-50" : ""
                         )}
                         readOnly={!canEditRatings || isCurrentUserTheEmployee}

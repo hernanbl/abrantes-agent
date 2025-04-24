@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, UserCircle } from "lucide-react";
 
 interface KPIActionsProps {
   canEditKpis?: boolean;
@@ -20,9 +20,10 @@ export function KPIActions({
         <Button
           type="button"
           onClick={() => onAddKpi && onAddKpi()}
-          className="mt-2"
+          className="mt-2 border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 flex items-center"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4 mr-1" />
+          <UserCircle className="h-4 w-4 mr-1" />
           Agregar nuevo KPI
         </Button>
       )}
