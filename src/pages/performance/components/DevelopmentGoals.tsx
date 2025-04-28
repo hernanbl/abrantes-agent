@@ -183,7 +183,7 @@ export function DevelopmentGoals({
         )}
       </div>
       <p className="text-sm text-muted-foreground">
-        Define acciones concretas para mejorar tus competencias
+        Podés pensar metas que acompañen tanto tu desempeño actual como tus aspiraciones a futuro.
       </p>
 
       {isInvalid && (

@@ -155,7 +155,7 @@ export function KPITable({
       
       <div className="flex items-center gap-2 mb-2 p-2 bg-slate-50 rounded-md border border-slate-200 text-slate-700 text-sm">
         <InfoIcon className="h-4 w-4 flex-shrink-0" />
-        <span>Nota: Los KPIs serán calificados por el supervisor</span>
+        <span>Los KPIs deben ser específicos, medibles, realistas y con fecha límite. Serán calificados por el supervisor.</span>
       </div>
       
       <Table className={canEditKpis ? "border border-blue-200 rounded-md shadow-[0_0_0_1px_rgba(59,130,246,0.2)]" : ""}>

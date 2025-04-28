@@ -59,87 +59,219 @@ export const saveReviewData = async (
     if (shouldUpdateKpis) {
       console.log("Actualizando KPIs:", formData.kpis);
       
-      // Primero, eliminar los KPIs existentes para esta revisión
-      const { error: deleteKpisError } = await supabase
+      // MODIFICACIÓN: Obtenemos los IDs de KPIs existentes para esta revisión
+      const { data: existingKpis, error: getKpisError } = await supabase
         .from('performance_kpis')
-        .delete()
+        .select('id, description')
         .eq('review_id', reviewId);
-
-      if (deleteKpisError) {
-        console.error("Error eliminando KPIs existentes:", deleteKpisError);
-        throw deleteKpisError;
+        
+      if (getKpisError) {
+        console.error("Error obteniendo KPIs existentes:", getKpisError);
+        throw getKpisError;
       }
-
-      // Luego, insertar los nuevos KPIs
-      const kpisToInsert = formData.kpis
-        .filter((kpi: any) => kpi.description && kpi.description.trim() !== '')
-        .map((kpi: any) => {
-          let rating = null;
-          // Si la calificación existe y es un número válido (incluyendo 0)
-          if (kpi.supervisor_rating !== undefined && kpi.supervisor_rating !== null) {
-            const numRating = Number(kpi.supervisor_rating);
-            // Verificar si es un número válido y está en el rango correcto (0-10)
-            if (!isNaN(numRating)) {
-              rating = Math.min(Math.max(numRating, 0), 10);
-            }
+      
+      // Creamos un mapa de los KPIs existentes para búsqueda rápida
+      const existingKpisMap = new Map();
+      existingKpis?.forEach(kpi => {
+        existingKpisMap.set(kpi.id, kpi.description);
+      });
+      
+      console.log("KPIs existentes:", existingKpisMap);
+      
+      // Identificar KPIs a mantener, actualizar o crear
+      const kpisToInsert = [];
+      const kpisToUpdate = [];
+      
+      for (const kpi of formData.kpis) {
+        if (!kpi.description || kpi.description.trim() === '') continue;
+        
+        let rating = null;
+        if (kpi.supervisor_rating !== undefined && kpi.supervisor_rating !== null) {
+          const numRating = Number(kpi.supervisor_rating);
+          if (!isNaN(numRating)) {
+            rating = numRating;
           }
-          
-          return {
-            review_id: reviewId,
-            description: kpi.description || '',
+        }
+        
+        // Si tiene ID y existe en la base de datos, actualizar
+        if (kpi.id && existingKpisMap.has(kpi.id)) {
+          kpisToUpdate.push({
+            id: kpi.id,
+            description: kpi.description,
             deadline: kpi.deadline || new Date().toISOString().split('T')[0],
             weight: Number(kpi.weight) || 0,
-            completion_percentage: kpi.completion_percentage || 0,
+            completion_percentage: kpi.completion_percentage !== undefined ? Number(kpi.completion_percentage) : null,
             supervisor_rating: rating
-          };
-        });
-          
-      if (kpisToInsert.length > 0) {
-        const { error: kpisError } = await supabase
-          .from('performance_kpis')
-          .insert(kpisToInsert);
-
-        if (kpisError) {
-          console.error("Error actualizando KPIs:", kpisError);
-          throw kpisError;
+          });
+        }
+        // Si no tiene ID o no existe en la base de datos, insertar
+        else {
+          kpisToInsert.push({
+            review_id: reviewId,
+            description: kpi.description,
+            deadline: kpi.deadline || new Date().toISOString().split('T')[0],
+            weight: Number(kpi.weight) || 0,
+            completion_percentage: kpi.completion_percentage !== undefined ? Number(kpi.completion_percentage) : null,
+            supervisor_rating: rating
+          });
         }
       }
-    } else {
-      console.log("Omitiendo actualización de KPIs para esta operación");
+      
+      // Identificar KPIs a eliminar (los que no están en el formulario actual)
+      const currentKpiIds = new Set(formData.kpis
+        .filter(kpi => kpi.id)
+        .map(kpi => kpi.id));
+        
+      const kpisToDelete = existingKpis
+        ?.filter(kpi => !currentKpiIds.has(kpi.id))
+        .map(kpi => kpi.id) || [];
+      
+      console.log("KPIs a actualizar:", kpisToUpdate);
+      console.log("KPIs a insertar:", kpisToInsert);
+      console.log("KPIs a eliminar:", kpisToDelete);
+      
+      // Ejecutar operaciones para KPIs
+      if (kpisToDelete.length > 0) {
+        const { error: deleteError } = await supabase
+          .from('performance_kpis')
+          .delete()
+          .in('id', kpisToDelete);
+          
+        if (deleteError) {
+          console.error("Error eliminando KPIs:", deleteError);
+          throw deleteError;
+        }
+      }
+      
+      if (kpisToUpdate.length > 0) {
+        for (const kpi of kpisToUpdate) {
+          const { error: updateKpiError } = await supabase
+            .from('performance_kpis')
+            .update({
+              description: kpi.description,
+              deadline: kpi.deadline,
+              weight: kpi.weight,
+              completion_percentage: kpi.completion_percentage,
+              supervisor_rating: kpi.supervisor_rating
+            })
+            .eq('id', kpi.id);
+            
+          if (updateKpiError) {
+            console.error(`Error actualizando KPI ${kpi.id}:`, updateKpiError);
+            throw updateKpiError;
+          }
+        }
+      }
+      
+      if (kpisToInsert.length > 0) {
+        const { error: insertKpisError } = await supabase
+          .from('performance_kpis')
+          .insert(kpisToInsert);
+          
+        if (insertKpisError) {
+          console.error("Error insertando nuevos KPIs:", insertKpisError);
+          throw insertKpisError;
+        }
+      }
     }
 
     // Solo actualizamos las skills si hay datos para actualizar
     const shouldUpdateSkills = formData.skills?.length > 0 && !isCommentUpdate;
     
     if (shouldUpdateSkills) {
-      // Primero, eliminar las skills existentes para esta revisión
-      const { error: deleteSkillsError } = await supabase
+      // MODIFICACIÓN: Mismo enfoque seguro para competencias
+      const { data: existingSkills, error: getSkillsError } = await supabase
         .from('skill_evaluations')
-        .delete()
+        .select('id, skill_name, level')
         .eq('review_id', reviewId);
-
-      if (deleteSkillsError) {
-        console.error("Error eliminando skills existentes:", deleteSkillsError);
-        throw deleteSkillsError;
+        
+      if (getSkillsError) {
+        console.error("Error obteniendo competencias existentes:", getSkillsError);
+        throw getSkillsError;
       }
-
-      // Luego, insertar las nuevas skills
-      const skillsToInsert = formData.skills
-        .filter((skill: any) => skill.name)
-        .map((skill: any) => ({
-          review_id: reviewId,
-          skill_name: skill.name,
-          level: skill.level || 'medio'
-        }));
+      
+      // Mapa de competencias existentes por nombre para búsqueda rápida
+      const existingSkillsMap = new Map();
+      existingSkills?.forEach(skill => {
+        existingSkillsMap.set(skill.skill_name, { id: skill.id, level: skill.level });
+      });
+      
+      // Identificar qué competencias actualizar o insertar
+      const skillsToInsert = [];
+      const skillsToUpdate = [];
+      const processedSkillNames = new Set();
+      
+      for (const skill of formData.skills) {
+        if (!skill.name) continue;
+        
+        processedSkillNames.add(skill.name);
+        const existingSkill = existingSkillsMap.get(skill.name);
+        
+        if (existingSkill) {
+          // Si la competencia existe y el nivel ha cambiado, actualizar
+          if (existingSkill.level !== skill.level) {
+            skillsToUpdate.push({
+              id: existingSkill.id,
+              level: skill.level || 'medio'
+            });
+          }
+        } else {
+          // Si la competencia no existe, insertar
+          skillsToInsert.push({
+            review_id: reviewId,
+            skill_name: skill.name,
+            level: skill.level || 'medio'
+          });
+        }
+      }
+      
+      // Identificar competencias a eliminar (las que no están en el formulario actual)
+      const skillsToDelete = [];
+      existingSkillsMap.forEach((value, key) => {
+        if (!processedSkillNames.has(key)) {
+          skillsToDelete.push(value.id);
+        }
+      });
+      
+      console.log("Competencias a actualizar:", skillsToUpdate);
+      console.log("Competencias a insertar:", skillsToInsert);
+      console.log("Competencias a eliminar:", skillsToDelete);
+      
+      // Ejecutar operaciones para competencias
+      if (skillsToDelete.length > 0) {
+        const { error: deleteError } = await supabase
+          .from('skill_evaluations')
+          .delete()
+          .in('id', skillsToDelete);
           
+        if (deleteError) {
+          console.error("Error eliminando competencias:", deleteError);
+          throw deleteError;
+        }
+      }
+      
+      if (skillsToUpdate.length > 0) {
+        for (const skill of skillsToUpdate) {
+          const { error: updateSkillError } = await supabase
+            .from('skill_evaluations')
+            .update({ level: skill.level })
+            .eq('id', skill.id);
+            
+          if (updateSkillError) {
+            console.error(`Error actualizando competencia ${skill.id}:`, updateSkillError);
+            throw updateSkillError;
+          }
+        }
+      }
+      
       if (skillsToInsert.length > 0) {
-        const { error: skillsError } = await supabase
+        const { error: insertSkillsError } = await supabase
           .from('skill_evaluations')
           .insert(skillsToInsert);
-
-        if (skillsError) {
-          console.error("Error actualizando skills:", skillsError);
-          throw skillsError;
+          
+        if (insertSkillsError) {
+          console.error("Error insertando nuevas competencias:", insertSkillsError);
+          throw insertSkillsError;
         }
       }
     }

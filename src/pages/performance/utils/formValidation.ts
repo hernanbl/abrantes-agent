@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast";
 
 type Skill = {
@@ -85,15 +84,7 @@ export const validateForm = (
     return false;
   }
   
-  // Validar objetivo a largo plazo
-  if (!formData.long_term_goal || formData.long_term_goal.trim() === '') {
-    toast({
-      variant: "destructive",
-      title: "Objetivo a largo plazo incompleto",
-      description: "Debe definir su objetivo profesional a largo plazo."
-    });
-    return false;
-  }
+  // Se ha eliminado la validación del objetivo a largo plazo ya que este campo fue ocultado del formulario
 
   return true;
 };

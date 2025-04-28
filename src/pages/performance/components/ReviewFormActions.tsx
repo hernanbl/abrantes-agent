@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 
@@ -22,21 +21,28 @@ export function ReviewFormActions({
   }
   
   return (
-    <CardFooter className="flex justify-end gap-4">
-      {showSaveButton && (
-        <Button
-          variant="outline"
-          onClick={() => onSave('save')}
-        >
-          Guardar como borrador
-        </Button>
-      )}
+    <CardFooter className="flex flex-col items-end gap-2">
+      <div className="flex gap-4">
+        {showSaveButton && (
+          <Button
+            variant="outline"
+            onClick={() => onSave('save')}
+          >
+            Guardar como borrador
+          </Button>
+        )}
+        {showSubmitButton && (
+          <Button
+            onClick={() => onSave('submit')}
+          >
+            Enviar evaluación
+          </Button>
+        )}
+      </div>
       {showSubmitButton && (
-        <Button
-          onClick={() => onSave('submit')}
-        >
-          Enviar evaluación
-        </Button>
+        <p className="text-sm text-muted-foreground mt-1">
+          Una vez enviada, el supervisor podrá revisarla y dar su devolución.
+        </p>
       )}
     </CardFooter>
   );

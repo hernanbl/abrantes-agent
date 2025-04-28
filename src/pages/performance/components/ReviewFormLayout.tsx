@@ -4,7 +4,6 @@ import { KPISection } from "./KPISection";
 import { SkillsEvaluation } from "./SkillsEvaluation";
 import { DevelopmentGoals } from "./DevelopmentGoals";
 import { Comments } from "./Comments";
-import { LongTermGoal } from "./LongTermGoal";
 import { ReviewFormHeader } from "./ReviewFormHeader";
 import { ReviewFormActions } from "./ReviewFormActions";
 import { useReviewForm } from "../hooks/useReviewForm";
@@ -301,11 +300,7 @@ export function ReviewFormLayout({
             reviewId={reviewId}
           />
 
-          <LongTermGoal
-            value={formData.long_term_goal}
-            handleChange={handleChange}
-            readOnly={isReadOnly || isSubmitted || !isCurrentUserTheEmployee}
-          />
+          {/* El componente LongTermGoal ha sido eliminado para ocultar el campo "Objetivo Profesional a Largo Plazo" */}
 
           <DevelopmentGoals
             goals={goals}
