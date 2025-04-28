@@ -139,7 +139,7 @@ export function Comments({
         {/* Supervisor comment - Editable only by direct supervisors and HR managers, never by employees */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="supervisorComment">Comentario del Supervisor</Label>
+            <Label htmlFor="supervisorComment">Feedback del Supervisor</Label>
             {canEditSupervisorComment && (
               <div className="flex items-center gap-1 text-sm px-2 py-1 bg-amber-50 text-amber-700 rounded-md border border-amber-200">
                 <ShieldCheck className="h-4 w-4" />
