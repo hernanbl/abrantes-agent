@@ -291,9 +291,6 @@ export function SkillsEvaluation({
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-lg font-semibold">Evaluación de Competencias</h3>
-          <p className="text-sm text-muted-foreground">
-            Evalúa el nivel de desarrollo en cada competencia
-          </p>
         </div>
         
         {!effectiveCanEditSkills && !readOnly && (
